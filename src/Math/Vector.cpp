@@ -1,4 +1,5 @@
 #include "./Math/Vector.hpp"
+#include <algorithm>
 #include <cmath>
 
 #include "./Math/Point.hpp"
@@ -79,4 +80,24 @@ Vector_2d Vector_2d::transform(float matrix[4])
 Vector_2d Vector_2d::abs()
 {
     return Vector_2d(std::abs(x), std::abs(y));
+}
+
+Vector_2d Vector_2d::min(Vector_2d b)
+{
+    return Vector_2d(std::min(x, b.x), std::min(y, b.y));
+}
+
+Vector_2d Vector_2d::max(Vector_2d b)
+{
+    return Vector_2d(std::max(x, b.x), std::max(y, b.y));
+}
+
+Vector_2d Vector_2d::min(float b)
+{
+    return Vector_2d(std::min(x, b), std::min(y, b));
+}
+
+Vector_2d Vector_2d::max(float b)
+{
+    return Vector_2d(std::max(x, b), std::max(y, b));
 }

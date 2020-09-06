@@ -17,8 +17,9 @@ file(GLOB_RECURSE SOURCES src/*.cpp)
 if (${EMSCRIPTEN})
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/public)
   set(CMAKE_EXECUTABLE_SUFFIX .html)
-  # SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s DISABLE_EXCEPTION_CATCHING=0")
+
   add_link_options(-s DISABLE_EXCEPTION_CATCHING=0)
+  add_link_options(--preload-file ../assets)
 
   add_executable(${PROJECT_NAME} ${SOURCES})  
 else()

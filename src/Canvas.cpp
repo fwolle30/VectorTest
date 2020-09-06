@@ -1,8 +1,6 @@
 #include "Canvas.hpp"
 #include "./Math/Vector.hpp"
 
-#include <iostream>
-
 Canvas::Canvas(SDL_Rect p_rect)
     : canvasRect(p_rect)
 {

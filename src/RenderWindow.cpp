@@ -7,10 +7,13 @@
 #include "RenderWindow.hpp"
 #include "Scene.hpp"
 #include "Canvas.hpp"
+#include "AssetManager.hpp"
 
 RenderWindow::RenderWindow(const char *p_title, int p_w, int p_h)
     : window(NULL), renderer(NULL)
 {
+    SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
+
     window = SDL_CreateWindow(p_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, p_w, p_h, SDL_WINDOW_SHOWN);
 
     if (window == NULL)
@@ -18,22 +21,25 @@ RenderWindow::RenderWindow(const char *p_title, int p_w, int p_h)
         std::cout << "Window failed to initialize: " << SDL_GetError() << std::endl;
     }
 
-    // renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    // renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+    assetManager = new AssetManager(renderer);
 }
 
-SDL_Texture *RenderWindow::loadTexture(const char *p_filePath)
-{
-    SDL_Texture *texture = NULL;
-    texture = IMG_LoadTexture(renderer, p_filePath);
+// SDL_Texture *RenderWindow::loadTexture(const char *p_filePath)
+// {
+//     SDL_Texture *texture = NULL;
+//     texture = IMG_LoadTexture(renderer, p_filePath);
 
-    if (texture == NULL)
-    {
-        std::cout << "Failed to load texture: " << SDL_GetError() << std::endl;
-    }
+//     if (texture == NULL)
+//     {
+//         std::cout << "Failed to load texture: " << SDL_GetError() << std::endl;
+//     }
 
-    return texture;
-}
+//     return texture;
+// }
 
 void RenderWindow::clear()
 {
@@ -45,9 +51,15 @@ void RenderWindow::drawScene()
     scene->draw(renderer);
 }
 
+void RenderWindow::getSize(int *h, int *w)
+{
+    SDL_GetWindowSize(window, w, h);
+}
+
 void RenderWindow::setScene(Scene *scene)
 {
     this->scene = scene;
+    scene->setRenderWindow(this);
 }
 
 void RenderWindow::updateScene()
@@ -57,10 +69,13 @@ void RenderWindow::updateScene()
 
 void RenderWindow::handleEvents(SDL_Event *event)
 {
-    InputManager* manager = scene->getInputManager();
-    if (manager != nullptr) {
+    InputManager *manager = scene->getInputManager();
+    if (manager != nullptr)
+    {
         manager->handleKeyEvent(event);
-    } else {
+    }
+    else
+    {
         std::cout << "No Input Manager" << std::endl;
     }
 }
@@ -72,7 +87,21 @@ Scene *RenderWindow::getScene()
 
 void RenderWindow::cleanUp()
 {
+    assetManager->cleanup();
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     window = NULL;
+    delete assetManager;
+    assetManager = NULL;
+}
+
+SDL_Renderer *RenderWindow::getRenderer()
+{
+    return renderer;
+}
+
+AssetManager *RenderWindow::getAssetManager()
+{
+    return assetManager;
 }

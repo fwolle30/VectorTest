@@ -1,6 +1,6 @@
 #pragma once
 
-struct  Point_2d;
+struct Point_2d;
 
 struct Vector_2d
 {
@@ -19,6 +19,10 @@ struct Vector_2d
     float operator*(Vector_2d b);
 
     Vector_2d abs();
+    Vector_2d min(Vector_2d b);
+    Vector_2d max(Vector_2d b);
+    Vector_2d min(float b);
+    Vector_2d max(float b);
 
     float length();
     Vector_2d normalize();

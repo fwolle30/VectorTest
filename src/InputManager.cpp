@@ -1,7 +1,5 @@
 #include "InputManager.hpp"
 
-#include <iostream>
-
 void InputManager::handleKeyEvent(SDL_Event *event) {
     if (event->type == SDL_KEYDOWN) {
         pressed[event->key.keysym.sym] = 1;

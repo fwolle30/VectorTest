@@ -1,5 +1,3 @@
-
-
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -13,6 +11,7 @@
 #include "InputManager.hpp"
 #include "Entity/Player.hpp"
 #include "Entity/Box.hpp"
+#include "Camera.hpp"
 
 #if __EMSCRIPTEN__
 #include <emscripten.h>
@@ -38,7 +37,7 @@ void updateTick(void *arg)
     RenderWindow *window = (RenderWindow *)arg;
 
     SDL_Event event;
- 
+
     while (SDL_PollEvent(&event))
     {
         window->handleEvents(&event);
@@ -55,14 +54,22 @@ int main(int argc, char *args[])
         std::cout << "SDL_Init has failed: " << SDL_GetError() << std::endl;
     }
 
-    RenderWindow window("Game", 1280, 720);
+    if (!IMG_Init(IMG_INIT_PNG)) {
+        std::cout << "IMG_Init has failed: " << SDL_GetError() << std::endl;
+    }
+
+    RenderWindow window("Game", 800, 600);
 
     Player player(150, 50);
-    Box box1(150, 150, 50, 50);
-    Box box2(200, 150, 50, 50);
-    Box box3(250, 150, 50, 50);
+    Box box1(720, 336, 32, 32);
+    Box box2(272, 144, 32, 32);
+    Box box3(400, 400, 32, 32);
 
-    Scene scene;
+    Scene scene(1600, 1200);
+
+    Camera camera(Point_2d(800 / 2, 600 / 2), 800, 600);
+
+    scene.setCamera(&camera);
 
     InputManager manager;
     scene.setInputManager(&manager);
@@ -74,6 +81,13 @@ int main(int argc, char *args[])
     scene.addEntity(&box2);
     scene.addEntity(&box3);
 
+    scene.initialize();
+
+    player.initialize();
+    box1.initialize();
+    box2.initialize();
+    box3.initialize();
+
     bool gameRunning = true;
 
     SDL_Event event;
@@ -83,18 +97,18 @@ int main(int argc, char *args[])
     {
         updateTick(&window);
 
-        if (manager.isPressed(SDLK_ESCAPE)) {
+        if (manager.isPressed(SDLK_ESCAPE))
+        {
             gameRunning = false;
         }
-
-        wasteTimeMs(1); // neccessary for fluid animations (updating to often leads to stuttering)
     }
 #else
     emscripten_set_main_loop_arg(updateTick, &window, -1, true);
 #endif
- 
+
     window.cleanUp();
 
+    IMG_Quit();
     SDL_Quit();
 
     return 0;

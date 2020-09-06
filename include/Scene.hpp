@@ -3,19 +3,28 @@
 #include <SDL2/SDL.h>
 #include <vector>
 
+enum EntityType : short;
 class Entity;
 class InputManager;
+class Camera;
+class RenderWindow;
 
 class Scene
 {
 public:
-    Scene();
+    Scene(float height, float with);
 
     void addEntity(Entity *entity);
-    Entity *getEntity(int key); // Quick and Dirty!! TODO: Make this better
 
-    Entity *getNearestObject(Entity *from, float length);
-    std::vector<Entity *> getObjectsInRange(Entity *from, float max_distance);
+    Entity *getNearestObject(Entity *from, float max_distance);
+    Entity *getNearestObjectOfType(Entity *from, EntityType type, float max_distance);
+
+    std::vector<Entity *> getObjectsInRange(Entity *from, float range);
+    std::vector<Entity *> getObjectsOfTypeInRange(Entity *from, EntityType type, float range);
+
+    std::vector<Entity *> getObjectsInRect(SDL_FRect rect);
+
+    void initialize();
 
     void update();
     void draw(SDL_Renderer *renderer);
@@ -23,9 +32,22 @@ public:
     void setInputManager(InputManager *manager);
     InputManager *getInputManager();
 
+    void setRenderWindow(RenderWindow *wnd);
+    RenderWindow *getRenderWindow();
+
+    void setCamera(Camera *camera);
+    Camera* getCamera();
+
+    SDL_FRect getSceneRect();
+
 private:
+    float height, width;
+    SDL_Texture *background;
+
     Uint64 lastTicks = 0;
     InputManager *inputManager;
-    // camera
+    Camera *camera;
     std::vector<Entity *> entities;
+    
+    RenderWindow* wnd;
 };

@@ -7,8 +7,6 @@
 #include <algorithm>
 #include <SDL2/SDL2_gfxPrimitives.h>
 
-#include <iostream>
-
 Entity::Entity(float x, float y, float h, float w)
     : x(x), y(y), h(h), w(w) {}
 
@@ -29,7 +27,24 @@ SDL_FRect Entity::getBoundingBox()
     SDL_FRect rect = {.x = x - hw,
                       .y = y - hh,
                       .w = w,
-                      .h = h };
+                      .h = h};
 
     return rect;
+}
+
+SDL_FRect Entity::getSpriteRect()
+{
+    float hh = h / 2.0, hw = w / 2.0;
+
+    SDL_FRect rect = {.x = x - hw,
+                      .y = y - hh,
+                      .w = w,
+                      .h = h};
+
+    return rect;
+}
+
+EntityType Entity::getType()
+{
+    return type;
 }
