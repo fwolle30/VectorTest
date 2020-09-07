@@ -10,6 +10,7 @@
 #include <SDL2/SDL2_gfxPrimitives.h>
 
 #include <iostream>
+#include <cmath>
 
 Player::Player(float x, float y)
     : Entity(x, y, 64, 64), direction(Vector_2d(0, 0)), speed(0.0), collision(false), frameCount(0), ticks(0)
@@ -32,7 +33,7 @@ void Player::update(double deltaTicks)
     int dirX = input->isPressed(SDLK_d) - input->isPressed(SDLK_a);
     int dirY = input->isPressed(SDLK_s) - input->isPressed(SDLK_w);
 
-    const int STEP_HEIGHT = 15; // "Overshoot" Threshold for easier detection of boundarys (Increase this to allow climbing stairs on a platformer)
+    const int STEP_HEIGHT = 10; // "Overshoot" Threshold for easier detection of boundarys (Increase this to allow climbing stairs on a platformer)
 
     Vector_2d newDir(dirX, dirY);
 
@@ -165,8 +166,8 @@ void Player::updatePosition(double deltaTicks)
 {
     Vector_2d tmp = direction * (speed * deltaTicks);
 
-    x += tmp.x;
-    y += tmp.y;
+    x += std::round(tmp.x);
+    y += std::round(tmp.y);
 }
 
 void Player::initialize()

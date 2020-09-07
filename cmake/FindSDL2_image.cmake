@@ -3,7 +3,8 @@ INCLUDE(FindPackageHandleStandardArgs)
 IF (${EMSCRIPTEN})
   SET(SDL2_image_FOUND 1)
 
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='[\"bmp\",\"png\",\"xpm\"]'")
+  add_link_options(-sUSE_SDL_IMAGE=2)
+  add_link_options(-sSDL2_IMAGE_FORMATS=[\"bmp\",\"png\",\"xpm\"])
 
   FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2_image SDL2_image_FOUND)
 ELSE()
