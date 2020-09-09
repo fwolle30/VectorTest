@@ -46,8 +46,8 @@ SDL_FRect Box::getBoundingBox()
     SDL_FRect rect;
 
     rect.x = x - hw;
-    rect.y = y - hh;
-    rect.h = h;
+    rect.y = y;
+    rect.h = h / 2;
     rect.w = w;
 
     return rect;
