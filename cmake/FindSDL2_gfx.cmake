@@ -3,6 +3,7 @@ INCLUDE(FindPackageHandleStandardArgs)
 IF (${EMSCRIPTEN})
   SET(SDL2_gfx_FOUND 1)
 
+  add_compile_options(-sUSE_SDL_GFX=2)
   add_link_options(-sUSE_SDL_GFX=2)
 
   FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2_gfx SDL2_gfx_FOUND)

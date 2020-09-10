@@ -3,6 +3,9 @@ INCLUDE(FindPackageHandleStandardArgs)
 IF (${EMSCRIPTEN})
   SET(SDL2_image_FOUND 1)
 
+  add_compile_options(-sUSE_SDL_IMAGE=2)
+  add_compile_options(-sSDL2_IMAGE_FORMATS=[\"bmp\",\"png\",\"xpm\"])  
+
   add_link_options(-sUSE_SDL_IMAGE=2)
   add_link_options(-sSDL2_IMAGE_FORMATS=[\"bmp\",\"png\",\"xpm\"])
 
