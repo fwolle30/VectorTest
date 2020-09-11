@@ -26,6 +26,11 @@ private:
     SDL_Texture* sprite;
 
     float ticks;
+    float animTicks;
+
+    uint animStart;
+    uint animFrames;
+    uint animDuration;
 
     void updatePosition(double deltaTicks);
 };

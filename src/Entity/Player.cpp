@@ -13,20 +13,29 @@
 #include <cmath>
 
 Player::Player(float x, float y)
-    : Entity(x, y, 64, 64), direction(Vector_2d(0, 0)), speed(0.0), collision(false), frameCount(0), ticks(0)
+    : Entity(x, y, 64, 64),
+      direction(Vector_2d(0, 0)),
+      speed(0.0),
+      collision(false),
+      frameCount(0),
+      ticks(0),
+      animStart(1),
+      animTicks(0),
+      animFrames(3),
+      animDuration(200)
 {
     type = ENTITY_TYPE_PLAYER;
 }
 
 void Player::update(double deltaTicks)
 {
-    frameCount = (frameCount + 1) % 10;
+    // frameCount = (frameCount + 1) % 10;
     ticks += deltaTicks;
 
-    if (frameCount == 0)
-    {
-        collision = false;
-    }
+    // if (frameCount == 0)
+    // {
+    collision = false;
+    // }
 
     InputManager *input = scene->getInputManager();
 
@@ -41,6 +50,8 @@ void Player::update(double deltaTicks)
 
     if (newDir.length() > 0)
     {
+        animTicks = std::max((float)animDuration, (float)(animTicks + deltaTicks));
+
         speed = 0.2;
         direction = newDir.normalize();
 
@@ -101,6 +112,11 @@ void Player::update(double deltaTicks)
             }
         }
     }
+    else
+    {
+        animTicks = 0;
+    }
+
     Camera *camera = scene->getCamera();
     camera->setPosition(getPosition());
 }
@@ -116,17 +132,13 @@ void Player::draw(SDL_Renderer *renderer, Point_2d camera_offset)
 
     int dir = 0;
 
-    int frame = 1;
+    // int frame = 1; // + std::abs((((int)(animTicks / 200) + 3) % 4) - 2) - 1;
 
-    if (speed > 0)
-    {
-        frame = (int)(ticks / 1000 * 4) % 4;
+    int inv = animFrames % 2;
+    int step = (animTicks / 200);
+    int steps = std::floor(animFrames / 2);
 
-        if (frame == 3)
-        {
-            frame = 1;
-        }
-    }
+    int frame = animStart + std::abs((step + (3 * steps)) % (4 * steps) - (2 * steps)) - (inv * steps);
 
     if (direction.y < 0)
     {
