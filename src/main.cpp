@@ -61,9 +61,9 @@ int main(int argc, char *args[])
     RenderWindow window("Game", 800, 600);
 
     Player player(150, 50);
-    Box box1(720, 336, 64, 64);
-    Box box2(272, 144, 64, 64);
-    Box box3(400, 400, 64, 64);
+    Box box1(200, 200, 50, 50);
+    Box box2(250, 200, 50, 50);
+    Box box3(300, 200, 50, 50);
 
     Scene scene(1600, 1200);
 

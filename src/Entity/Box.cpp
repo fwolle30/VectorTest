@@ -24,9 +24,15 @@ void Box::draw(SDL_Renderer *renderer, Point_2d camera_offset)
     float dx = x - camera_offset.x - wh, dy = y - camera_offset.y - hh;
 
     SDL_Rect dstRect = {.x = (int)dx, .y = (int)dy, .w = (int)w, .h = (int)h};
-    SDL_RenderCopy(renderer, sprite, NULL, &dstRect);
+    // SDL_RenderCopy(renderer, sprite, NULL, &dstRect);
 
-    // SDL_FRect bb = getBoundingBox();
+    SDL_FRect bb = getBoundingBox();
+    bb.x -= camera_offset.x;
+    bb.y -= camera_offset.y;
+
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_RenderDrawRectF(renderer, &bb);
+
     // rectangleRGBA(renderer, bb.x - camera_offset.x, bb.y - camera_offset.y, bb.x - camera_offset.x + bb.w, bb.y - camera_offset.y + bb.h, 255, 255, 255, 255);
 }
 
@@ -46,8 +52,8 @@ SDL_FRect Box::getBoundingBox()
     SDL_FRect rect;
 
     rect.x = x - hw;
-    rect.y = y;
-    rect.h = h / 2;
+    rect.y = y- hh;
+    rect.h = h;
     rect.w = w;
 
     return rect;

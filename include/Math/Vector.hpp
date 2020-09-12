@@ -8,19 +8,25 @@ struct Vector_2d
 
     Vector_2d();
     Vector_2d(float x, float y);
+    Vector_2d(const Point_2d &b);
 
-    void operator=(Vector_2d b);
+    void operator=(const Vector_2d &b);
 
-    Vector_2d operator+(Vector_2d b);
-    Vector_2d operator*(float f);
-    Vector_2d operator-(Vector_2d b);
+    Vector_2d operator+(const Vector_2d &b);
+    Vector_2d operator-(const Vector_2d &b);
+    Vector_2d operator*(const Vector_2d &b);    
+    Vector_2d operator/(const Vector_2d &b);
+
+    Vector_2d operator+=(const Vector_2d &b);
+
     Vector_2d operator/(float f);
+    Vector_2d operator*(float f);
 
-    float operator*(Vector_2d b);
+    operator Point_2d();
 
     Vector_2d abs();
-    Vector_2d min(Vector_2d b);
-    Vector_2d max(Vector_2d b);
+    Vector_2d min(const Vector_2d &b);
+    Vector_2d max(const Vector_2d &b);
     Vector_2d min(float b);
     Vector_2d max(float b);
 

@@ -16,13 +16,7 @@ Player::Player(float x, float y)
     : Entity(x, y, 64, 64),
       direction(Vector_2d(0, 0)),
       speed(0.0),
-      collision(false),
-      frameCount(0),
-      ticks(0),
-      animStart(1),
-      animTicks(0),
-      animFrames(3),
-      animDuration(200)
+      collision(false)
 {
     type = ENTITY_TYPE_PLAYER;
 }
@@ -42,21 +36,17 @@ void Player::update(double deltaTicks)
     int dirX = input->isPressed(SDLK_d) - input->isPressed(SDLK_a);
     int dirY = input->isPressed(SDLK_s) - input->isPressed(SDLK_w);
 
-    const int STEP_HEIGHT = 10; // "Overshoot" Threshold for easier detection of boundarys (Increase this to allow climbing stairs on a platformer)
-
     Vector_2d newDir(dirX, dirY);
 
-    speed = 0.0;
+    speed = 0.0f;
 
     if (newDir.length() > 0)
     {
-        animTicks = std::max((float)animDuration, (float)(animTicks + deltaTicks));
-
-        speed = 0.2;
+        speed = 0.2f;
         direction = newDir.normalize();
+        Vector_2d velocity = direction * speed * deltaTicks;
 
-        float bx = x, by = y;
-        updatePosition(deltaTicks);
+        Point_2d oldPos(x, y);
 
         float scanLength = Vector_2d(w, h).length();
 
@@ -70,51 +60,25 @@ void Player::update(double deltaTicks)
                 SDL_FRect ebb = e->getBoundingBox();
                 SDL_FRect mbb = getBoundingBox();
 
+                Point_2d hit;
+                float length;
+                Vector_2d normal;
+
                 // Set the collision flag, but check only if the current entity caused the collision.
                 // If we simply check against the Player collsion flag, we would limit the movement to the boundarys of the current object e.
                 // Not nice for movement, because we allways stop in front of the next tile / object.
-
-                bool check = Collision::collideAABB(mbb, ebb);
+                bool check = Collision::collideAABB2(mbb, ebb, velocity, hit, length, normal);
                 collision |= check;
 
-                if (check)
+                if (check && length <= 1.0f)
                 {
-                    Point_2d p1(mbb.x, mbb.y);
-                    Point_2d p2(mbb.x + mbb.w, mbb.y);
-                    Point_2d p3(mbb.x + mbb.w, mbb.y + mbb.h);
-                    Point_2d p4(mbb.x, mbb.y + mbb.h);
-
-                    Point_2d e1(ebb.x, ebb.y);
-                    Point_2d e2(ebb.x + ebb.w, ebb.y);
-                    Point_2d e3(ebb.x + ebb.w, ebb.y + ebb.h);
-                    Point_2d e4(ebb.x, ebb.y + ebb.h);
-
-                    float bbXOffset = x - mbb.x;
-                    float bbYOffset = y - mbb.y;
-
-                    if ((p3.x > e1.x && p3.y < e1.y + (STEP_HEIGHT * dirY)) && (p4.x < e2.x && p4.y < e2.y + (STEP_HEIGHT * dirY))) // Top Boundary
-                    {
-                        y = e1.y + bbYOffset - mbb.h;
-                    }
-                    else if ((p2.x > e4.x && p2.y > e4.y + (STEP_HEIGHT * dirY)) && (p1.x < e3.x && p1.y > e3.y + (STEP_HEIGHT * dirY))) // Bottom Boundary
-                    {
-                        y = e4.y + bbYOffset;
-                    }
-                    else if ((p3.y > e1.y && p3.x < e1.x + (STEP_HEIGHT * dirX)) && (p2.y < e4.y && p2.x < e4.x + (STEP_HEIGHT * dirX))) // Left Boundary
-                    {
-                        x = e1.x + bbXOffset - mbb.w;
-                    }
-                    else if ((p4.y > e2.y && p4.x > e2.x + (STEP_HEIGHT * dirX)) && (p1.y < e3.y && p1.x > e3.x + (STEP_HEIGHT * dirX))) // Right Boundary
-                    {
-                        x = e2.x + bbXOffset;
-                    }
+                    velocity += normal * (velocity.abs() * (1.1f - length));
                 }
             }
         }
-    }
-    else
-    {
-        animTicks = 0;
+
+        x = oldPos.x + velocity.x;
+        y = oldPos.y + velocity.y;
     }
 
     Camera *camera = scene->getCamera();
@@ -132,13 +96,7 @@ void Player::draw(SDL_Renderer *renderer, Point_2d camera_offset)
 
     int dir = 0;
 
-    // int frame = 1; // + std::abs((((int)(animTicks / 200) + 3) % 4) - 2) - 1;
-
-    int inv = animFrames % 2;
-    int step = (animTicks / 200);
-    int steps = std::floor(animFrames / 2);
-
-    int frame = animStart + std::abs((step + (3 * steps)) % (4 * steps) - (2 * steps)) - (inv * steps);
+    int frame = 1; // + std::abs((((int)(animTicks / 200) + 3) % 4) - 2) - 1;
 
     if (direction.y < 0)
     {
@@ -171,15 +129,12 @@ void Player::draw(SDL_Renderer *renderer, Point_2d camera_offset)
     SDL_RenderCopy(renderer, sprite, &srcRect, &dstRect);
 
     // SDL_FRect bb = getBoundingBox();
-    // rectangleRGBA(renderer, bb.x - camera_offset.x, bb.y - camera_offset.y, bb.x - camera_offset.x + bb.w, bb.y - camera_offset.y + bb.h, 255, 255, 255, 255);
-}
 
-void Player::updatePosition(double deltaTicks)
-{
-    Vector_2d tmp = direction * (speed * deltaTicks);
+    // bb.x -= camera_offset.x;
+    // bb.y -= camera_offset.y;
 
-    x += std::round(tmp.x);
-    y += std::round(tmp.y);
+    // SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    // SDL_RenderDrawRectF(renderer, &bb);
 }
 
 void Player::initialize()
@@ -193,14 +148,14 @@ void Player::initialize()
 
 SDL_FRect Player::getBoundingBox()
 {
-    float hh = h / (float)2;
-    float hw = (w - (float)20) / (float)2;
+    float hh = h / 2.0f;
+    float hw = (w - 20.f) / 2.0f;
 
     SDL_FRect rect;
     rect.x = x - hw;
-    rect.y = (y + hh) - 20;
-    rect.h = 20;
-    rect.w = w - 20;
+    rect.y = (y + hh) - 24.f;
+    rect.h = 24.f;
+    rect.w = (w - 20.f);
 
     return rect;
 }

@@ -13,7 +13,7 @@
 #include "RenderWindow.hpp"
 #include "AssetManager.hpp"
 
-const float FPS = 100;
+const float FPS = 60;
 
 Scene::Scene(float height, float width) : inputManager(nullptr), height(height), width(width) {}
 

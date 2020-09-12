@@ -5,6 +5,7 @@
 #include "./Math/Point.hpp"
 
 Vector_2d::Vector_2d() : x(0), y(0) {}
+
 Vector_2d::Vector_2d(float x, float y) : x(x), y(y)
 {
     if (isnanf(x))
@@ -18,15 +19,43 @@ Vector_2d::Vector_2d(float x, float y) : x(x), y(y)
     }
 }
 
-void Vector_2d::operator=(Vector_2d b)
+Vector_2d::Vector_2d(const Point_2d &b) {
+    x = b.x;
+    y = b.y;
+}
+
+void Vector_2d::operator=(const Vector_2d &b)
 {
     x = b.x;
     y = b.y;
 }
 
-Vector_2d Vector_2d::operator+(Vector_2d b)
+Vector_2d Vector_2d::operator+(const Vector_2d &b)
 {
     return Vector_2d(x + b.x, y + b.y);
+}
+
+Vector_2d Vector_2d::operator-(const Vector_2d &b)
+{
+    return Vector_2d(x - b.x, y - b.y);
+}
+
+Vector_2d Vector_2d::operator*(const Vector_2d &b)
+{
+    return Vector_2d(x * b.x, y * b.y);
+}
+
+Vector_2d Vector_2d::operator/(const Vector_2d &b)
+{
+    return Vector_2d(x / b.x, y / b.y);
+}
+
+Vector_2d Vector_2d::operator+=(const Vector_2d &b)
+{
+    x += b.x;
+    y += b.y;
+
+    return Vector_2d(x, y);
 }
 
 Vector_2d Vector_2d::operator*(float f)
@@ -34,19 +63,39 @@ Vector_2d Vector_2d::operator*(float f)
     return Vector_2d(f * x, f * y);
 }
 
-Vector_2d Vector_2d::operator-(Vector_2d b)
-{
-    return Vector_2d(x - b.x, y - b.y);
-}
-
 Vector_2d Vector_2d::operator/(float f)
 {
     return Vector_2d(x / f, y / f);
 }
 
-float Vector_2d::operator*(Vector_2d b)
+Vector_2d::operator Point_2d()
 {
-    return x * b.x + y * b.y;
+    return Point_2d(x, y);
+}
+
+Vector_2d Vector_2d::abs()
+{
+    return Vector_2d(std::abs(x), std::abs(y));
+}
+
+Vector_2d Vector_2d::min(const Vector_2d &b)
+{
+    return Vector_2d(std::min(x, b.x), std::min(y, b.y));
+}
+
+Vector_2d Vector_2d::max(const Vector_2d &b)
+{
+    return Vector_2d(std::max(x, b.x), std::max(y, b.y));
+}
+
+Vector_2d Vector_2d::min(float b)
+{
+    return Vector_2d(std::min(x, b), std::min(y, b));
+}
+
+Vector_2d Vector_2d::max(float b)
+{
+    return Vector_2d(std::max(x, b), std::max(y, b));
 }
 
 float Vector_2d::length()
@@ -75,29 +124,4 @@ Vector_2d Vector_2d::transform(float matrix[4])
     float a = matrix[0], b = matrix[1], c = matrix[2], d = matrix[3];
 
     return Vector_2d(x * a + y * b, x * c + y * d);
-}
-
-Vector_2d Vector_2d::abs()
-{
-    return Vector_2d(std::abs(x), std::abs(y));
-}
-
-Vector_2d Vector_2d::min(Vector_2d b)
-{
-    return Vector_2d(std::min(x, b.x), std::min(y, b.y));
-}
-
-Vector_2d Vector_2d::max(Vector_2d b)
-{
-    return Vector_2d(std::max(x, b.x), std::max(y, b.y));
-}
-
-Vector_2d Vector_2d::min(float b)
-{
-    return Vector_2d(std::min(x, b), std::min(y, b));
-}
-
-Vector_2d Vector_2d::max(float b)
-{
-    return Vector_2d(std::max(x, b), std::max(y, b));
 }
