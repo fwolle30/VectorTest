@@ -1,6 +1,6 @@
 #include "Entity/Player.hpp"
 #include "InputManager.hpp"
-#include "Scene.hpp"
+#include "./Scene/Scene.hpp"
 
 #include "RenderWindow.hpp"
 #include "AssetManager.hpp"
@@ -8,15 +8,17 @@
 #include "Camera.hpp"
 
 #include <SDL2/SDL2_gfxPrimitives.h>
-
+#include <algorithm>
 #include <iostream>
 #include <cmath>
 
 Player::Player(float x, float y)
-    : Entity(x, y, 64, 64),
+    : Entity(x, y, 32, 32),
       direction(Vector_2d(0, 0)),
       speed(0.0),
-      collision(false)
+      collision(false),
+      animTicks(0),
+      ticks(0)
 {
     type = ENTITY_TYPE_PLAYER;
 }
@@ -42,6 +44,7 @@ void Player::update(double deltaTicks)
 
     if (newDir.length() > 0)
     {
+        animTicks = std::max(float(animTicks + deltaTicks), 200.f);
         speed = 0.2f;
         direction = newDir.normalize();
         Vector_2d velocity = direction * speed * deltaTicks;
@@ -56,9 +59,8 @@ void Player::update(double deltaTicks)
         {
             if (e != nullptr)
             {
-                e->dbg = true;
-                SDL_FRect ebb = e->getBoundingBox();
                 SDL_FRect mbb = getBoundingBox();
+                SDL_FRect ebb = e->getBoundingBox();
 
                 Point_2d hit;
                 float length;
@@ -79,6 +81,8 @@ void Player::update(double deltaTicks)
 
         x = oldPos.x + velocity.x;
         y = oldPos.y + velocity.y;
+    } else {
+        animTicks = 0;
     }
 
     Camera *camera = scene->getCamera();
@@ -96,7 +100,7 @@ void Player::draw(SDL_Renderer *renderer, Point_2d camera_offset)
 
     int dir = 0;
 
-    int frame = 1; // + std::abs((((int)(animTicks / 200) + 3) % 4) - 2) - 1;
+    int frame = 1 + std::abs((((int)(animTicks / 200) + 3) % 4) - 2) - 1;
 
     if (direction.y < 0)
     {
@@ -149,13 +153,13 @@ void Player::initialize()
 SDL_FRect Player::getBoundingBox()
 {
     float hh = h / 2.0f;
-    float hw = (w - 20.f) / 2.0f;
+    float hw = w / 2.0f;
 
     SDL_FRect rect;
-    rect.x = x - hw;
-    rect.y = (y + hh) - 24.f;
-    rect.h = 24.f;
-    rect.w = (w - 20.f);
+    rect.x = (x - hw) + 4;
+    rect.y = (y - hh) + 16;
+    rect.h = h - 16;
+    rect.w = w - 8;
 
     return rect;
 }

@@ -26,4 +26,5 @@ private:
     SDL_Texture* sprite;
 
     float ticks;
+    float animTicks;
 };

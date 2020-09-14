@@ -1,6 +1,6 @@
 #include "Entity/Entity.hpp"
 
-#include "Scene.hpp"
+#include "./Scene/Scene.hpp"
 #include "InputManager.hpp"
 #include "./Math/Vector.hpp"
 

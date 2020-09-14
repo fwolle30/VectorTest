@@ -5,7 +5,7 @@
 
 #include "InputManager.hpp"
 #include "RenderWindow.hpp"
-#include "Scene.hpp"
+#include "./Scene/Scene.hpp"
 #include "Canvas.hpp"
 #include "AssetManager.hpp"
 

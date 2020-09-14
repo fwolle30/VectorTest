@@ -24,7 +24,7 @@ public:
 
     std::vector<Entity *> getObjectsInRect(SDL_FRect rect);
 
-    void initialize();
+    virtual void initialize();
 
     void update();
     void draw(SDL_Renderer *renderer);
@@ -40,9 +40,10 @@ public:
 
     SDL_FRect getSceneRect();
 
-private:
+protected:
     float height, width;
     SDL_Texture *background;
+    SDL_Texture *foreground;    
 
     Uint64 lastTicks = 0;
     InputManager *inputManager;

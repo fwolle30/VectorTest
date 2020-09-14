@@ -2,7 +2,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include "Scene.hpp"
+#include "./Scene/Scene.hpp"
 
 #include "Entity/Entity.hpp"
 #include "Math/Point.hpp"
@@ -15,11 +15,20 @@
 
 const float FPS = 60;
 
-Scene::Scene(float height, float width) : inputManager(nullptr), height(height), width(width) {}
+Scene::Scene(float height, float width)
+    : inputManager(nullptr),
+      height(height),
+      width(width),
+      background(nullptr),
+      foreground(nullptr)
+{
+}
 
 void Scene::addEntity(Entity *entity)
 {
-    entity->setScene(this);
+    if (entity != nullptr)
+        entity->setScene(this);
+
     entities.push_back(entity);
 }
 
@@ -37,7 +46,8 @@ void Scene::update()
 
     for (Entity *entity : entities)
     {
-        entity->update(deltaTicks);
+        if (entity != nullptr)
+            entity->update(deltaTicks);
     }
 
     camera->update();
@@ -45,9 +55,18 @@ void Scene::update()
 
 void Scene::draw(SDL_Renderer *renderer)
 {
-    std::sort(entities.begin(), entities.end(), [](Entity *a, Entity *b) {
+    std::stable_sort(entities.begin(), entities.end(), [](Entity *a, Entity *b) {
         // Point_2d pa = a->getPosition();
         // Point_2d pb = b->getPosition();
+
+        if (a == nullptr)
+        {
+            return true;
+        }
+        else if (b == nullptr)
+        {
+            return false;
+        }
 
         SDL_FRect ra = a->getSpriteRect();
         SDL_FRect rb = b->getSpriteRect();
@@ -67,9 +86,18 @@ void Scene::draw(SDL_Renderer *renderer)
     src.h = (int)cwp.h;
     src.w = (int)cwp.w;
 
-    SDL_RenderCopy(renderer, background, &src, NULL);
+    if (background != nullptr)
+        SDL_RenderCopy(renderer, background, &src, NULL);
 
     camera->draw(renderer);
+
+    src.x = std::max((int)cwp.x, 0);
+    src.y = std::max((int)cwp.y, 0);
+    src.h = (int)cwp.h;
+    src.w = (int)cwp.w;
+
+    if (foreground != nullptr)
+        SDL_RenderCopy(renderer, foreground, &src, NULL);
 
     SDL_RenderPresent(renderer);
 
@@ -179,7 +207,7 @@ std::vector<Entity *> Scene::getObjectsOfTypeInRange(Entity *from, EntityType ty
 
     for (Entity *entity : entities)
     {
-        if (entity == from || entity->getType() != type)
+        if (entity == from || entity == nullptr || entity->getType() != type)
             continue;
 
         float l = entity->getPosition().distance(startPos).length();
@@ -210,6 +238,9 @@ std::vector<Entity *> Scene::getObjectsInRect(SDL_FRect rect)
 
     for (Entity *entity : entities)
     {
+        if (entity == nullptr)
+            continue;
+
         if (Collision::collideAABB(entity->getBoundingBox(), rect))
         {
             found.push_back(entity);
@@ -243,11 +274,11 @@ SDL_FRect Scene::getSceneRect()
 
 void Scene::initialize()
 {
-    int h, w;
+    // int h, w;
 
-    SDL_Renderer *renderer = wnd->getRenderer();
-    AssetManager *assets = wnd->getAssetManager();
+    // SDL_Renderer *renderer = wnd->getRenderer();
+    // AssetManager *assets = wnd->getAssetManager();
 
-    assets->loadTextureScaled("background", "./assets/grass.png", 2);
-    background = assets->getTextureTiled("background", height, width);
+    // assets->loadTextureScaled("background", "./assets/grass.png", 2);
+    // background = assets->getTextureTiled("background", height, width);
 }

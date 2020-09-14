@@ -7,11 +7,12 @@
 #include <stdint.h>
 
 #include "RenderWindow.hpp"
-#include "Scene.hpp"
+#include "./Scene/Scene.hpp"
 #include "InputManager.hpp"
 #include "Entity/Player.hpp"
 #include "Entity/Box.hpp"
 #include "Camera.hpp"
+#include "./Scene/TileMap.hpp"
 
 #if __EMSCRIPTEN__
 #include <emscripten.h>
@@ -58,16 +59,11 @@ int main(int argc, char *args[])
         std::cout << "IMG_Init has failed: " << SDL_GetError() << std::endl;
     }
 
-    RenderWindow window("Game", 800, 600);
+    RenderWindow window("Game", 800, 576);
 
-    Player player(150, 50);
-    Box box1(200, 200, 50, 50);
-    Box box2(250, 200, 50, 50);
-    Box box3(300, 200, 50, 50);
+    TileMap scene("./assets/testmap.map");
 
-    Scene scene(1600, 1200);
-
-    Camera camera(Point_2d(800 / 2, 600 / 2), 800, 600);
+    Camera camera(Point_2d(800 / 2, 576 / 2), 800, 576);
 
     scene.setCamera(&camera);
 
@@ -76,17 +72,7 @@ int main(int argc, char *args[])
 
     window.setScene(&scene);
 
-    scene.addEntity(&player);
-    scene.addEntity(&box1);
-    scene.addEntity(&box2);
-    scene.addEntity(&box3);
-
     scene.initialize();
-
-    player.initialize();
-    box1.initialize();
-    box2.initialize();
-    box3.initialize();
 
     bool gameRunning = true;
 

@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 
-#include "Scene.hpp"
+#include "./Scene/Scene.hpp"
 #include "Entity/Player.hpp"
 #include "Math/Point.hpp"
 #include "RenderWindow.hpp"

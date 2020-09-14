@@ -6,7 +6,7 @@
 
 #include "Math/Point.hpp"
 #include "Entity/Entity.hpp"
-#include "Scene.hpp"
+#include "./Scene/Scene.hpp"
 #include "InputManager.hpp"
 #include "RenderWindow.hpp"
 
@@ -55,20 +55,23 @@ void Camera::update()
     float mx = w / 2;
     float my = h / 2;
 
-
-    if (cwp.x < 0) {
+    if (cwp.x < 0)
+    {
         position.x = mx;
     }
 
-    if (cwp.x + w > sceneRect.w) {
+    if (cwp.x + w > sceneRect.w)
+    {
         position.x = sceneRect.w - mx;
     }
 
-    if (cwp.y < 0) {
+    if (cwp.y < 0)
+    {
         position.y = my;
     }
 
-    if (cwp.y + h > sceneRect.h) {
+    if (cwp.y + h > sceneRect.h)
+    {
         position.y = sceneRect.h - my;
     }
 }
@@ -89,7 +92,8 @@ void Camera::draw(SDL_Renderer *renderer)
 
     for (Entity *entity : entities)
     {
-        entity->draw(renderer, offset);
+        if (entity != nullptr)
+            entity->draw(renderer, offset);
     }
 
     float x1 = vp.x - offset.x;
