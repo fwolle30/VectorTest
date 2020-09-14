@@ -170,7 +170,7 @@ void TileMap::initialize()
         char c = tileMap[i];
 
         int tx = i % mapWidth;
-        int ty = std::floor(i / mapWidth);
+        int ty = floor(i / mapWidth);
 
         float mx = tx * TILE_SIZE;
         float my = ty * TILE_SIZE;

@@ -62,7 +62,7 @@ SDL_Rect TileSet::getTileRectFromGroup(std::string group, uint index)
     if (found)
     {
         float x = (setIndex % size_w) * tilesize_w;
-        float y = std::floor(setIndex / size_w) * tilesize_h;
+        float y = floor(setIndex / size_w) * tilesize_h;
 
         ret.x = x;
         ret.y = y;
@@ -96,7 +96,7 @@ SDL_Rect TileSet::getTileRectFromBitmask(std::string group, ushort bitmask)
     if (found)
     {
         float x = (setIndex % size_w) * tilesize_w;
-        float y = std::floor(setIndex / size_w) * tilesize_h;
+        float y = floor(setIndex / size_w) * tilesize_h;
 
         ret.x = x;
         ret.y = y;
