@@ -1,13 +1,17 @@
-pipeline:
-  build:
-    image: emscripten/emsdk
-    commands:
-      - cd build
-      - bash -c "emcmake cmake -G 'Unix Makefiles' .. "
-      - bash -c "emmake make"
+kind: pipeline
+type: docker
+name: default
 
-  deploy:
-    image: appleboy/drone-scp
+steps:
+- name: build
+  image: emscripten/emsdk
+  commands:
+  - cd build
+  - bash -c "emcmake cmake -G 'Unix Makefiles' .. "
+  - bash -c "emmake make"
+- name: deploy
+  image: appleboy/drone-scp
+  settings:
     strip_components: 1
     source: public/*
     host:
@@ -18,3 +22,7 @@ pipeline:
       from_secret: ssh_key
     target:
       from_secret: deploy_path
+
+trigger:
+  branch:
+  - gametest
