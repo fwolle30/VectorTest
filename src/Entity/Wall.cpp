@@ -37,11 +37,11 @@ SDL_FRect Wall::getBoundingBox()
 
 void Wall::draw(SDL_Renderer *renderer, Point_2d camera_offset)
 {
-    // SDL_FRect bb = getBoundingBox();
+    SDL_FRect bb = getBoundingBox();
 
-    // bb.x -= camera_offset.x;
-    // bb.y -= camera_offset.y;
+    bb.x -= camera_offset.x;
+    bb.y -= camera_offset.y;
 
-    // SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    // SDL_RenderDrawRectF(renderer, &bb);
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_RenderDrawRectF(renderer, &bb);
 }

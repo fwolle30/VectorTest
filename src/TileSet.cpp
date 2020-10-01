@@ -110,11 +110,6 @@ SDL_Rect TileSet::getTileRectFromBitmask(std::string group, ushort bitmask)
 uint TileSet::getTileIndexFromBitmask(std::string group, ushort bitmask)
 {
     uint setIndex = 9999;
-    SDL_Rect ret = {
-        .x = 0,
-        .y = 0,
-        .w = 0,
-        .h = 0};
 
     for (Tile t : set)
     {
@@ -125,5 +120,5 @@ uint TileSet::getTileIndexFromBitmask(std::string group, ushort bitmask)
         }
     }
 
-    return setIndex;    
+    return setIndex;
 }
