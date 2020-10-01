@@ -8,13 +8,13 @@ pipeline:
 
   deploy:
     image: appleboy/drone-scp
-    host: 
+    strip_components: 1
+    source: public/*
+    host:
       from_secret: deploy_host
     username:
       from_secret: ssh_user
     key:
       from_secret: ssh_key
-    strip_components: 1
-    target: 
+    target:
       from_secret: deploy_path
-    source: public/*
