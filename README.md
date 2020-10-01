@@ -1,0 +1,1 @@
+[![Build Status](https://drone.frank-wolbring.de/api/badges/fwolle30/VectorTest/status.svg)](https://drone.frank-wolbring.de/fwolle30/VectorTest)
