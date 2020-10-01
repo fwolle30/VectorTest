@@ -30,6 +30,8 @@ trigger:
 kind: pipeline
 type: docker
 name: Notify
+clone:
+  disable: true
 steps:
   - name: notify
     image: appleboy/drone-discord
