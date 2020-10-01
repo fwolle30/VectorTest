@@ -21,6 +21,8 @@ if (${EMSCRIPTEN})
   add_link_options(-s DISABLE_EXCEPTION_CATCHING=0)
   add_link_options(--preload-file ../assets)
 
+  message(INFO ${CMAKE_CXX_FLAGS})
+
   add_executable(${PROJECT_NAME} ${SOURCES})  
 else()
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
