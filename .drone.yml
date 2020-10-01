@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: default
+name: Build
 
 steps:
   - name: build
@@ -22,6 +22,15 @@ steps:
         from_secret: ssh_key
       target:
         from_secret: deploy_path
+trigger:
+  branch:
+    - gametest
+
+---
+kind: pipeline
+type: docker
+name: Notify
+steps:
   - name: notify
     image: appleboy/drone-discord
     settings:
@@ -31,11 +40,17 @@ steps:
         from_secret: webhook_token
       message: >
         {{#success build.status}}
-          build {{build.number}} ready for testing.
+          Build {{build.number}} ready for testing.
+          http://gametest.frank-wolbring.de/
         {{else}}
           build {{build.number}} failed.
         {{/success}}
 
+depends_on:
+  - Build
 trigger:
   branch:
     - gametest
+  status:
+      - failure
+      - success
