@@ -7,8 +7,8 @@ cmake_policy(SET CMP0076 NEW)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 # find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_gfx REQUIRED)
+# find_package(SDL2_image REQUIRED)
+# find_package(SDL2_gfx REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR}/include ${SDL2_INCLUDE_DIR} ${SDL2_image_INCLUDE_DIR} ${SDL2_gfx_INCLUDE_DIR})
 
