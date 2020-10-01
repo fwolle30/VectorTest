@@ -1,0 +1,6 @@
+pipeline:
+  build:
+    image: emscripten/emsdk
+    commands:
+      - bash -c "emcmake cmake -G 'Unix Makefiles' . "
+      - bash -c "emmake make"
